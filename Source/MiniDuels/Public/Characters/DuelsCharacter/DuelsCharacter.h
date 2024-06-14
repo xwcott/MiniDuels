@@ -6,6 +6,7 @@
 #include "PaperZDCharacter.h"
 #include "DuelsCharacter.generated.h"
 
+class UDuelsAnimationManager;
 struct FInputActionValue;
 class UDuelsCharacterMovement;
 class USpringArmComponent;
@@ -25,6 +26,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDuelsCharacterMovement* GetDuelsCharacterMovement() const {return DuelsCharacterMovement;}
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UDuelsAnimationManager* GetAnimationManager() const {return AnimationManager;}
 
 protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
@@ -34,6 +37,8 @@ protected:
 	TObjectPtr<USpringArmComponent> SpringArm;
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	TObjectPtr<UCameraComponent> CamComponent;
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	TObjectPtr<UDuelsAnimationManager> AnimationManager;
 
 	UPROPERTY()
 	TObjectPtr<UDuelsCharacterMovement> DuelsCharacterMovement = nullptr;

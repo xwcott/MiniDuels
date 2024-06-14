@@ -10,19 +10,14 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Characters/DuelsCharacter/DuelsAnimationManager.h"
 
 ADuelsCharacter::ADuelsCharacter(const FObjectInitializer& ObjectInitializer) : Super
 (ObjectInitializer.SetDefaultSubobjectClass<UDuelsCharacterMovement>(ACharacter::CharacterMovementComponentName))
 {
-	if(UCharacterMovementComponent* CharacterMovementComponent = GetCharacterMovement())
+	if(UPaperFlipbookComponent* MainFlipbookComponent = GetSprite())
 	{
-		CharacterMovementComponent->MaxAcceleration = 4096.f;
-		CharacterMovementComponent->GroundFriction = 16.f;
-	}
-
-	if(UPaperFlipbookComponent* SpriteComp = GetSprite())
-	{
-		GetSprite()->CastShadow = true;
+		MainFlipbookComponent->CastShadow = true;
 	}
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -33,6 +28,8 @@ ADuelsCharacter::ADuelsCharacter(const FObjectInitializer& ObjectInitializer) : 
 
 	CamComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	CamComponent->SetupAttachment(SpringArm);
+
+	AnimationManager = CreateDefaultSubobject<UDuelsAnimationManager>(TEXT("AnimationManager"));
 }
 
 void ADuelsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -84,5 +81,4 @@ void ADuelsCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	DuelsCharacterMovement = CastChecked<UDuelsCharacterMovement>(GetCharacterMovement());
-	DuelsCharacterMovement->SetOwningDuelsCharacter(this);
 }
