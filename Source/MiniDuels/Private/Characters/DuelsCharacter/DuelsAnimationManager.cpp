@@ -21,6 +21,21 @@ void UDuelsAnimationManager::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	DOREPLIFETIME(UDuelsAnimationManager, bIsFacingLeft);
 }
 
+void UDuelsAnimationManager::UpdateSpriteDirection()
+{
+	if (UPaperFlipbookComponent* FlipbookComponent = OwningDuelsCharacter->GetSprite())
+	{
+		const FVector CurrentScale = FlipbookComponent->GetRelativeScale3D();
+		const FVector NewScale = FVector(bIsFacingLeft ? -1.f : 1.f, CurrentScale.Y, CurrentScale.Z);
+		if(CurrentScale == NewScale) return;
+		FlipbookComponent->SetRelativeScale3D(NewScale);
+
+		const FVector CurrentLoc = FlipbookComponent->GetRelativeLocation();
+		const FVector NewLoc = FVector(CurrentLoc.X * -1.f, CurrentLoc.Y, CurrentLoc.Z);
+		FlipbookComponent->SetRelativeLocation(NewLoc);
+	}
+}
+
 void UDuelsAnimationManager::BeginPlay()
 {
 	Super::BeginPlay();
@@ -28,25 +43,24 @@ void UDuelsAnimationManager::BeginPlay()
 	OwningDuelsCharacter = CastChecked<ADuelsCharacter>(GetOwner());
 }
 
-void UDuelsAnimationManager::FaceLeft(bool bFaceLeft)
+void UDuelsAnimationManager::OnRep_bIsFacingLeft()
 {
-	ServerFaceLeft_Implementation(bFaceLeft);
-	
-	bIsFacingLeft = bFaceLeft;
+	UpdateSpriteDirection();
 }
 
 void UDuelsAnimationManager::ServerFaceLeft_Implementation(bool bFaceLeft)
 {
-	if(UPaperFlipbookComponent* FlipbookComponent = OwningDuelsCharacter->GetSprite())
-	{
-		const FVector CurrentScale = FlipbookComponent->GetRelativeScale3D();
-		const FVector NewScale = FVector(CurrentScale.X * bFaceLeft ? -1 : 1, CurrentScale.Y, CurrentScale.Z);
-		FlipbookComponent->SetRelativeScale3D(NewScale);
+	bIsFacingLeft = bFaceLeft;
+	UpdateSpriteDirection();
+}
 
-		const FVector CurrentLoc = FlipbookComponent->GetRelativeLocation();
-		const FVector NewLoc = FVector(CurrentLoc.X * bFaceLeft ? -1 : 1, CurrentLoc.Y, CurrentLoc.Z);
-		FlipbookComponent->SetRelativeLocation(NewLoc);
-		
-		bIsFacingLeft = bFaceLeft;
+void UDuelsAnimationManager::FaceLeft(const bool bFaceLeft)
+{
+	bIsFacingLeft = bFaceLeft;
+	UpdateSpriteDirection();
+	
+	if (!GetOwner()->HasAuthority())
+	{
+		ServerFaceLeft(bFaceLeft);
 	}
 }

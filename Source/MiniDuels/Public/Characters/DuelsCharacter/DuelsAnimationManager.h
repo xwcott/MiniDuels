@@ -24,11 +24,14 @@ public:
 	void FaceLeft(bool bFaceLeft);
 	
 protected:
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void BeginPlay() override;
-	
-	UPROPERTY(Replicated)
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	void UpdateSpriteDirection();
+	UPROPERTY(ReplicatedUsing = OnRep_bIsFacingLeft)
 	bool bIsFacingLeft = false;
+	UFUNCTION()
+	void OnRep_bIsFacingLeft();
 	UFUNCTION(Server, Reliable)
 	void ServerFaceLeft(bool bFaceLeft);
 	

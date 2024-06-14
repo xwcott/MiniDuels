@@ -4,7 +4,14 @@
 #include "Characters/DuelsCharacter/DuelsCharacterMovement.h"
 
 #include "PaperFlipbookComponent.h"
+#include "Characters/DuelsCharacter/DuelsAnimationManager.h"
 #include "Characters/DuelsCharacter/DuelsCharacter.h"
+
+UDuelsCharacterMovement::UDuelsCharacterMovement()
+{
+	GroundFriction = 32.f;
+	MaxAcceleration = 4096.f;
+}
 
 void UDuelsCharacterMovement::OnMovementUpdated(float DeltaSeconds, const FVector& OldLocation,
                                                 const FVector& OldVelocity)
@@ -14,30 +21,19 @@ void UDuelsCharacterMovement::OnMovementUpdated(float DeltaSeconds, const FVecto
 	HandleMovement(DeltaSeconds);
 }
 
-void UDuelsCharacterMovement::FlipSprite()
-{
-	if(UPaperFlipbookComponent* FlipbookComponent = OwningDuelsCharacter->GetSprite())
-	{
-		const FVector CurrentScale = FlipbookComponent->GetRelativeScale3D();
-		const FVector NewScale = FVector(CurrentScale.X * -1, CurrentScale.Y, CurrentScale.Z);
-		FlipbookComponent->SetRelativeScale3D(NewScale);
-
-		const FVector CurrentLoc = FlipbookComponent->GetRelativeLocation();
-		const FVector NewLoc = FVector(CurrentLoc.X * -1, CurrentLoc.Y, CurrentLoc.Z);
-		FlipbookComponent->SetRelativeLocation(NewLoc);
-		
-		bIsFacingLeft = !bIsFacingLeft;
-	}
-}
-
 void UDuelsCharacterMovement::UpdateMoveInput(float NewInput)
 {
 	MoveInput += NewInput;
-	
-	if ((MoveInput < 0 && !bIsFacingLeft) || (MoveInput > 0 && bIsFacingLeft))
-	{
-		FlipSprite();
-	}
+	if(MoveInput == 0) return;
+
+	OwningDuelsCharacter->GetAnimationManager()->FaceLeft(MoveInput < 0);
+}
+
+void UDuelsCharacterMovement::BeginPlay()
+{
+	Super::BeginPlay();
+
+	OwningDuelsCharacter = CastChecked<ADuelsCharacter>(GetOwner());
 }
 
 void UDuelsCharacterMovement::HandleMovement(float DeltaSeconds) const

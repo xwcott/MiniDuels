@@ -16,6 +16,8 @@ class MINIDUELS_API UDuelsCharacterMovement : public UCharacterMovementComponent
 	GENERATED_BODY()
 
 public:
+	UDuelsCharacterMovement();
+	
 	virtual void OnMovementUpdated(float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity) override;
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -28,14 +30,11 @@ public:
 	void UpdateMoveInput(float NewInput);
 
 protected:
+	virtual void BeginPlay() override;
+	
 	float MoveInput = 0.f;
-
+	
 	void HandleMovement(float DeltaSeconds) const;
-
-	UPROPERTY()
-	bool bIsFacingLeft = false;
-	UFUNCTION()
-	void FlipSprite();
 
 	UPROPERTY()
 	TObjectPtr<ADuelsCharacter> OwningDuelsCharacter = nullptr;

@@ -39,7 +39,7 @@ protected:
 	TObjectPtr<UCameraComponent> CamComponent;
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	TObjectPtr<UDuelsAnimationManager> AnimationManager;
-
+	
 	UPROPERTY()
 	TObjectPtr<UDuelsCharacterMovement> DuelsCharacterMovement = nullptr;
 
