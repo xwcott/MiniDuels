@@ -5,6 +5,7 @@
 
 #include "Characters/DuelsCharacter/DuelsCharacter.h"
 #include "PaperFlipbookComponent.h"
+#include "Characters/DuelsCharacter/DuelsCharacterMovement.h"
 #include "Net/UnrealNetwork.h"
 
 UDuelsAnimationManager::UDuelsAnimationManager()
@@ -45,6 +46,8 @@ void UDuelsAnimationManager::BeginPlay()
 
 void UDuelsAnimationManager::OnRep_bIsFacingLeft()
 {
+	float MoveInput = OwningDuelsCharacter->GetDuelsCharacterMovement()->GetMoveInput();
+	if(MoveInput != 0) bIsFacingLeft = MoveInput < 0;
 	UpdateSpriteDirection();
 }
 
