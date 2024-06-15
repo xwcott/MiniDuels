@@ -3,7 +3,6 @@
 
 #include "Characters/DuelsCharacter/DuelsCharacterMovement.h"
 
-#include "PaperFlipbookComponent.h"
 #include "Characters/DuelsCharacter/DuelsAnimationManager.h"
 #include "Characters/DuelsCharacter/DuelsCharacter.h"
 

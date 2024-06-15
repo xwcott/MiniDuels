@@ -12,7 +12,7 @@ UDuelsAnimationManager::UDuelsAnimationManager()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	
-	SetIsReplicated(true);
+	SetIsReplicatedByDefault(true);
 }
 
 void UDuelsAnimationManager::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
