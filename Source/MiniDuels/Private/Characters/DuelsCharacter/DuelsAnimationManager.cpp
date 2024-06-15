@@ -46,6 +46,8 @@ void UDuelsAnimationManager::BeginPlay()
 
 void UDuelsAnimationManager::OnRep_bIsFacingLeft()
 {
+	if(GetOwnerRole() == ROLE_AutonomousProxy) return;
+	
 	float MoveInput = OwningDuelsCharacter->GetDuelsCharacterMovement()->GetMoveInput();
 	if(MoveInput != 0) bIsFacingLeft = MoveInput < 0;
 	UpdateSpriteDirection();
