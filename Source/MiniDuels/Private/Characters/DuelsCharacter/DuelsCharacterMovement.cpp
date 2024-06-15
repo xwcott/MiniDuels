@@ -23,9 +23,16 @@ void UDuelsCharacterMovement::OnMovementUpdated(float DeltaSeconds, const FVecto
 void UDuelsCharacterMovement::UpdateMoveInput(float NewInput)
 {
 	MoveInput += NewInput;
-	if(MoveInput == 0) return;
-
-	OwningDuelsCharacter->GetAnimationManager()->FaceLeft(MoveInput < 0);
+	if(UDuelsAnimationManager* AnimationManager = OwningDuelsCharacter->GetAnimationManager())
+	{
+		if(MoveInput == 0)
+		{
+			AnimationManager->SetWantsToMove(false);
+			return;
+		}
+		AnimationManager->FaceLeft(MoveInput < 0);
+		AnimationManager->SetWantsToMove(true);
+	}
 }
 
 void UDuelsCharacterMovement::BeginPlay()

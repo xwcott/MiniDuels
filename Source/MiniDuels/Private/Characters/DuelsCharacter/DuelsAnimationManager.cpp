@@ -20,6 +20,7 @@ void UDuelsAnimationManager::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UDuelsAnimationManager, bIsFacingLeft);
+	DOREPLIFETIME(UDuelsAnimationManager, bWantsToMove);
 }
 
 void UDuelsAnimationManager::UpdateSpriteDirection()
@@ -68,4 +69,17 @@ void UDuelsAnimationManager::FaceLeft(const bool bFaceLeft)
 	{
 		ServerFaceLeft(bFaceLeft);
 	}
+}
+
+void UDuelsAnimationManager::OnRep_bWantsToMove()
+{
+	if(GetOwnerRole() == ROLE_AutonomousProxy) return;
+
+	bLocalWantsToMove = bWantsToMove;
+}
+
+void UDuelsAnimationManager::ServerUpdateWantsToMove_Implementation(bool bInWantsToMove)
+{
+	bWantsToMove = bInWantsToMove;
+	bLocalWantsToMove = bInWantsToMove;
 }
